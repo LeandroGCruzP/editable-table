@@ -1,4 +1,5 @@
 import { Table as ChakraTable, TableCaption, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react'
+import React from 'react'
 import { users } from '../mock/tableDados'
 import { Menu } from './Menu'
 
