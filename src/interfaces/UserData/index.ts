@@ -1,5 +1,5 @@
 export type UserData = {
-  id: number
+  id: string
   is_admin: boolean
   name: string
   email: string

@@ -1,12 +1,9 @@
 {
   "compilerOptions": {
-    "jsx": "react",
     "composite": true,
     "module": "ESNext",
     "moduleResolution": "Node",
-    "allowSyntheticDefaultImports": true,
-    "baseUrl": "src"
+    "allowSyntheticDefaultImports": true
   },
-
-  "include": ["vite.config.ts",  "**/*.ts", "**/*.tsx", "./src"],
+  "include": ["vite.config.ts"]
 }
