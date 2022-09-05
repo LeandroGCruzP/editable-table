@@ -9,6 +9,7 @@ export const Menu = () => {
       aria-label='Options'
       icon={<Icons.ChevronDown fontSize='1.3rem' />}
       variant='outline'
+      w='48px'
     />
 
     <MenuList>

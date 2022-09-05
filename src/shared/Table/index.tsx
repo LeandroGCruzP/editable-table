@@ -1,34 +1,37 @@
-import { Table as ChakraTable, TableCaption, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
-import { queryUsers } from '../../services/users'
-import { TableError } from './TableError'
+import { Table as ChakraTable, TableCaption, TableContainer, Tbody, Td, Th, Thead, Tr, EditablePreview, Editable, EditableInput, Flex } from '@chakra-ui/react'
+import { queryGetUsers } from '../../services/users'
+import { CustomControls } from '../CustomControls'
 import { Menu } from '../Menu'
+import { ModalNewUser } from '../Modal'
 import { PopoverForm } from '../PopoverForm'
+import { TableError } from './TableError'
 import { TableSkeleton } from './TableSkeleton'
+import { FormatDate } from '../../utils/FormatDate'
 
 export const Table = () => {
-  const { list: { data, isLoading, isError } } = queryUsers()
+  const { data, isLoading, isError } = queryGetUsers()
 
   if(isLoading) {
     return <TableSkeleton />
   }
 
-  if(!isError) {
+  if(isError) {
     return <TableError />
   }
 
   return (
     <TableContainer minWidth={850} >
       <ChakraTable variant='simple'>
-        <TableCaption>Table by friends</TableCaption>
-
         <Thead>
           <Tr>
-            <Th>ID</Th>
-            <Th>User</Th>
-            <Th>Age</Th>
-            <Th>Admin</Th>
-            <Th>Created</Th>
-            <Th />
+            <Th minW='50px'>ID</Th>
+            <Th minW='250px'>User</Th>
+            <Th minW='200px'>Age</Th>
+            <Th minW='100px'>Admin</Th>
+            <Th minW='250px'>Created</Th>
+            <Th minW='50px'> 
+              <ModalNewUser/>
+            </Th>
           </Tr>
         </Thead>
 
@@ -39,15 +42,25 @@ export const Table = () => {
               <Td>
                 <PopoverForm name={user.name} email={user.email} />
               </Td>
-              <Td>{user.age}</Td>
+              <Td>
+                <Editable px={2} defaultValue={String(user.age)} isPreviewFocusable={false}>
+                  <Flex justify='space-between'>
+                    <EditablePreview />
+                    <EditableInput type='number' maxLength={2} minLength={1} pl={2} w='50px' mr={2}/>
+                    <CustomControls />
+                  </Flex>
+                </Editable>
+              </Td>
               <Td>{user.is_admin ? 'Admin' : 'Employer'}</Td>
-              <Td>{user.created_at}</Td>
+              <Td>{FormatDate(user.created_at)}</Td>
               <Td>
                 <Menu />
               </Td>
             </Tr>
-        ))}
+          ))}
         </Tbody>
+
+        <TableCaption>Table by friends</TableCaption>
       </ChakraTable>
     </TableContainer>
   )
