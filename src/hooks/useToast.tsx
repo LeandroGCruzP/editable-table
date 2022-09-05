@@ -14,14 +14,14 @@ export const ToastContext = createContext({} as ToastContextData)
 
 export function ToastProvider({ children }: ToastProviderProps) {
 	const toastError = useToastChakra({
-		title: 'Um erro ocorreu',
+		title: 'An error ocurred',
 		position: 'top-right',
 		duration: 2000,
 		isClosable: true,
 		status: 'error',
 	})
 	const toastSuccess = useToastChakra({
-		title: 'Operação realizada',
+		title: 'Operation performed',
 		position: 'top-right',
 		duration: 2000,
 		isClosable: true,

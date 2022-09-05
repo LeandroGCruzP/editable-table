@@ -1,6 +1,6 @@
 import { Alert, AlertDescription, AlertIcon, AlertTitle, Box } from '@chakra-ui/react'
 
-export function TableError() {
+export const TableError = () => {
   return (
     <Alert status='warning'>
       <AlertIcon />
