@@ -3,8 +3,7 @@ import { RiDeleteBin7Line } from 'react-icons/ri'
 import { HiOutlinePencilAlt } from 'react-icons/hi'
 
 export const Icons = {
-  iconDelete: RiDeleteBin7Line,
-  iconChevronDown: BiChevronDown,
-  iconPencil : HiOutlinePencilAlt
+  Delete: RiDeleteBin7Line,
+  ChevronDown: BiChevronDown,
+  Pencil : HiOutlinePencilAlt
 }
-
