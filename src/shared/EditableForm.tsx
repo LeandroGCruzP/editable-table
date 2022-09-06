@@ -1,45 +1,57 @@
 import { Editable, Flex, EditablePreview, EditableInput, useEditableControls, ButtonGroup, IconButton } from '@chakra-ui/react'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { SubmitHandler, useForm } from 'react-hook-form'
+import { useForm, SubmitHandler } from 'react-hook-form'
 import { Icons } from '../assets/icons'
-import { UpdateUserAgeSchema } from '../utils/validateSchema/users/UpdateUserAgeSchema'
+import { useToast } from '../hooks/useToast'
+import { UserDataPut } from '../interfaces'
+import { queryPutUser } from '../services/users'
 
 interface EditableFormProps {
-  age: string
-}
-
-interface UserSchema {
-  age: string
+  id: string
+  age: number
 }
 
 export const EditableForm = (props: EditableFormProps) => {
-  const { age } = props
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<UserSchema>({
-    resolver: yupResolver(UpdateUserAgeSchema())
-  })
+  const { id, age } = props
 
-  const onSubmit: SubmitHandler<UserSchema> = user => console.log('[USER]', user)
+  const { mutate: putUser } = queryPutUser(id)
+  const { toastSuccess, toastError } = useToast()
+  const { register, handleSubmit } = useForm<UserDataPut>()
 
-  function EditableControls() {
+  const onSubmit: SubmitHandler<UserDataPut> = data => {
+    const userData = {
+      age: data.age
+    }
+
+    // ! Fazer validação se é a mesma idade nao precisa atualizar
+
+    putUser(userData, {
+      onSuccess: () => toastSuccess({ description: 'User updated' }),
+      onError: () => toastError({ description: 'Error on update user, try again later' })
+    })
+  }
+
+  const EditableControls = () => {
     const { isEditing, getSubmitButtonProps, getCancelButtonProps, getEditButtonProps } = useEditableControls()
-
-    // TODO: Colocar onSubmit no botao
 
     return isEditing ? (
       <ButtonGroup justifyContent='center' size='sm'>
-        <IconButton aria-label='Button to accept change' icon={<Icons.Check />} {...getSubmitButtonProps()} />
-        <IconButton aria-label='Button to discart change' icon={<Icons.Cancel />} {...getCancelButtonProps()} />
+        <IconButton aria-label='Submit' icon={<Icons.Check />} {...getSubmitButtonProps()} />
+        <IconButton aria-label='Cancel' icon={<Icons.Cancel />} {...getCancelButtonProps()} />
       </ButtonGroup>
-    ) : (
-      <Flex justifyContent='center'>
-        <IconButton aria-label='Button to update field' size='sm' icon={<Icons.Pencil />} {...getEditButtonProps()} />
-      </Flex>
-    )
+    ) : <IconButton aria-label='Update' size='sm' icon={<Icons.Pencil />} {...getEditButtonProps()} />
   }
 
+  // ! Está funcionando mas a tipagem solicita que seja String o que faz que se limite a somente um input.. devo resolver isso
+
   return (
-    <Editable px={2} defaultValue={age} isPreviewFocusable={false}>
-      <Flex onSubmit={handleSubmit(onSubmit)} justify='space-between'>
+    <Editable
+      as='form'
+      onSubmit={handleSubmit(onSubmit)}
+      defaultValue={String(age)}
+      px={2}
+      isPreviewFocusable={false}
+    >
+      <Flex justify='space-between'>
         <EditablePreview />
         <EditableInput
           type='number'

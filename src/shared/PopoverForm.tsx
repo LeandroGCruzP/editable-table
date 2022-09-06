@@ -29,16 +29,19 @@ export const PopoverForm = (props: PopoverFormProps) => {
   const { toastSuccess, toastError } = useToast()
   const { mutate: putUser } = queryPutUser(id)
 
-  const onSubmit: SubmitHandler<UserSchema> = user => {
-    putUser(user, {
+  const onSubmit: SubmitHandler<UserSchema> = data => {
+    const userData = {
+      name: data.name,
+      email: data.email
+    }
+
+    putUser(userData, {
       onSuccess: () => {
-        toastSuccess({ description: 'Updated user' })
+        toastSuccess({ description: 'User updated' })
 
         onFetch()
       },
-      onError: () => {
-        toastError({ description: 'Error on update user, try again later' })
-      }
+      onError: () => toastError({ description: 'Error on update user, try again later' })
     })
 
     onClose()
