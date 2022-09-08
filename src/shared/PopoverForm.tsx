@@ -1,17 +1,51 @@
 import { Button, ButtonGroup, Flex, IconButton, Popover, PopoverArrow, PopoverCloseButton, PopoverContent, PopoverTrigger, Stack, Text, useDisclosure } from '@chakra-ui/react'
-import React from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { Icons } from '../assets/icons'
 import { Input } from './Input'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { UpdateUserNameEmailSchema } from '../utils/validateSchema/users/UpdateUserNameEmailSchema'
+import { queryPutUser } from '../services/users'
+import { useToast } from '../hooks/useToast'
 
 interface PopoverFormProps {
+  id: string
+  name: string
+  email: string
+  onFetch: () => void
+}
+
+interface UserSchema {
   name: string
   email: string
 }
 
 export const PopoverForm = (props: PopoverFormProps) => {
-  const { name, email } = props
+  const { id, name, email, onFetch } = props
   const { onOpen, onClose, isOpen } = useDisclosure()
-  const firstFieldRef = React.useRef(null)
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<UserSchema>({
+    resolver: yupResolver(UpdateUserNameEmailSchema())
+  })
+
+  const { toastSuccess, toastError } = useToast()
+  const { mutate: putUser } = queryPutUser(id)
+
+  const onSubmit: SubmitHandler<UserSchema> = data => {
+    const userData = {
+      name: data.name,
+      email: data.email
+    }
+
+    putUser(userData, {
+      onSuccess: () => {
+        toastSuccess({ description: 'User updated' })
+
+        onFetch()
+      },
+      onError: () => toastError({ description: 'Error on update user, try again later' })
+    })
+
+    onClose()
+  }
 
   return (
     <Flex justify='space-between' >
@@ -22,7 +56,6 @@ export const PopoverForm = (props: PopoverFormProps) => {
 
       <Popover
         isOpen={isOpen}
-        initialFocusRef={firstFieldRef}
         onOpen={onOpen}
         onClose={onClose}
         placement='right'
@@ -36,13 +69,27 @@ export const PopoverForm = (props: PopoverFormProps) => {
           <PopoverArrow />
           <PopoverCloseButton />
 
-          <Stack spacing={4}>
-            <Input label='Name' id='name' ref={firstFieldRef} defaultValue={name} />
-            <Input type='email' label='Email' id='email' defaultValue={email} />
+          <Stack as='form' onSubmit={handleSubmit(onSubmit)} spacing={4}>
+            <Input
+              id='name'
+              label='Name'
+              error={errors.name}
+              defaultValue={name}
+              {...register('name')}
+            />
+
+            <Input
+              type='email'
+              id='email'
+              label='Email'
+              error={errors.email}
+              defaultValue={email}
+              {...register('email')}
+            />
 
             <ButtonGroup display='flex' justifyContent='flex-end'>
-              <Button variant='outline' onClick={onClose}>Cancel</Button>
-              <Button isDisabled colorScheme='teal'>Save</Button>
+              <Button variant='outline' isLoading={isSubmitting} onClick={onClose}>Cancel</Button>
+              <Button type='submit' colorScheme='teal' isDisabled={false} isLoading={isSubmitting}>Save</Button>
             </ButtonGroup>
           </Stack>
         </PopoverContent>

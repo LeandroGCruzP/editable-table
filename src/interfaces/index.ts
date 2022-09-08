@@ -1,3 +1,3 @@
-import { UserData } from './UserData'
+import { UserData, UserDataPost, UserDataPut } from './UserData'
 
-export type { UserData }
+export type { UserData, UserDataPost, UserDataPut }

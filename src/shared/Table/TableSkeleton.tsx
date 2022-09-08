@@ -1,6 +1,6 @@
 import { Skeleton, Td, Tr, Table as ChakraTable, TableCaption, TableContainer, Tbody, Th, Thead } from '@chakra-ui/react'
 
-export function TableSkeleton() {
+export const TableSkeleton = () => {
   return (
     <TableContainer minWidth={850} >
       <ChakraTable variant='simple'>

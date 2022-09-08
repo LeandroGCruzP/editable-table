@@ -3,6 +3,7 @@ import { createContext, ReactNode, useContext } from 'react'
 
 interface ToastContextData {
 	toastError: CreateToastFnReturn
+	toastInfo: CreateToastFnReturn
 	toastSuccess: CreateToastFnReturn
 }
 
@@ -14,14 +15,21 @@ export const ToastContext = createContext({} as ToastContextData)
 
 export function ToastProvider({ children }: ToastProviderProps) {
 	const toastError = useToastChakra({
-		title: 'Um erro ocorreu',
+		title: 'An error ocurred',
 		position: 'top-right',
 		duration: 2000,
 		isClosable: true,
 		status: 'error',
 	})
+	const toastInfo = useToastChakra({
+		title: 'Operation refused',
+		position: 'top-right',
+		duration: 2000,
+		isClosable: true,
+		status: 'info',
+	})
 	const toastSuccess = useToastChakra({
-		title: 'Operação realizada',
+		title: 'Operation performed',
 		position: 'top-right',
 		duration: 2000,
 		isClosable: true,
@@ -29,7 +37,7 @@ export function ToastProvider({ children }: ToastProviderProps) {
 	})
 
 	return (
-		<ToastContext.Provider value={{ toastError, toastSuccess }}>{children}</ToastContext.Provider>
+		<ToastContext.Provider value={{ toastError, toastInfo, toastSuccess }}>{children}</ToastContext.Provider>
 	)
 }
 
