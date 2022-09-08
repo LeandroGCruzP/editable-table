@@ -60,7 +60,7 @@ export const Table = () => {
           ))}
         </Tbody>
 
-        <TableCaption>Table by friends</TableCaption>
+        <TableCaption>Table by friends 😄</TableCaption>
       </ChakraTable>
     </TableContainer>
   )

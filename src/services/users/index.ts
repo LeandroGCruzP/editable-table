@@ -32,3 +32,7 @@ export function queryGetUserById(userId: string) {
 export function queryPostUser() {
   return useMutation((userData: UserData) => postUser(userData))
 }
+
+export function queryPutUser(userId: string) {
+  return useMutation((userData: UserData) => postUser(userId, userData))
+}
